@@ -1,0 +1,10 @@
+{
+  "name": "HeyZere",
+  "version": "0.0.1",
+  "author": "dperolio",
+  "authorId": "97549189629636608",
+  "description": "Adds a command `heyzere` that continuously replaces all images in Discord with random images of Zerebos.",
+  "icon": "assets/icon.png",
+  "color": "#d07c79",
+  "license": "MIT"
+}
