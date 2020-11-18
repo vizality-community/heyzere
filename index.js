@@ -1,6 +1,6 @@
 const { join } = require('path');
 
-const { file: { convertImageToBlobURL } } = require('@vizality/util');
+const { array: { getRandomArrayItem }, file: { getObjectURL } } = require('@vizality/util');
 const { Plugin } = require('@vizality/entities');
 
 module.exports = class HeyZere extends Plugin {
@@ -26,12 +26,8 @@ module.exports = class HeyZere extends Plugin {
       .then(() => this.URLs = []);
   }
 
-  getRandomURL () {
-    return this.URLs[Math.floor(Math.random() * this.URLs.length)];
-  }
-
   async _convertToBlobURL () {
-    this.URLs = await convertImageToBlobURL(join(__dirname, 'assets', 'zerebos'));
+    this.URLs = await getObjectURL(join(__dirname, 'assets', 'zerebos'));
     this.heyZere();
   }
 
@@ -40,14 +36,14 @@ module.exports = class HeyZere extends Plugin {
       document.querySelectorAll('[style*="background-image"]')
         .forEach(({ style }) => {
           if (!this.URLs.filter(url => style.backgroundImage.includes(url)).length) {
-            style.backgroundImage = `url("${this.getRandomURL()}")`;
+            style.backgroundImage = `url("${getRandomArrayItem(this.URLs)}")`;
           }
         });
 
       document.querySelectorAll('img')
         .forEach(image => {
           if (!this.URLs.includes(image.src)) {
-            image.src = this.getRandomURL();
+            image.src = getRandomArrayItem(this.URLs);
           }
         });
     }, 50);
