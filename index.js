@@ -1,6 +1,6 @@
-const { readdirSync, readFileSync } = require('fs');
-const { join, extname } = require('path');
+const { join } = require('path');
 
+const { file: { convertImageToBlobURL } } = require('@vizality/util');
 const { Plugin } = require('@vizality/entities');
 
 module.exports = class HeyZere extends Plugin {
@@ -15,33 +15,24 @@ module.exports = class HeyZere extends Plugin {
       command: 'heyzere',
       description: 'Replaces every image with a random image of Zerebos.',
       usage: '{c}',
-      executor: this.convertImagesToObjectURLs.bind(this)
+      executor: this._convertToBlobURL.bind(this)
     });
   }
 
-  onStop () {
+  async onStop () {
     clearInterval(this.interval);
     vizality.api.commands.unregisterCommand('heyzere');
-    this.URLs.forEach(url => URL.revokeObjectURL(url));
-  }
-
-  convertImagesToObjectURLs () {
-    const validExtensions = [ '.png', '.jpg', '.jpeg', '.webp', '.gif' ];
-    readdirSync(join(__dirname, 'assets', 'zerebos'))
-      .filter(file => validExtensions.indexOf(extname(file) !== -1))
-      .map(file => {
-        const image = join(__dirname, 'assets', 'zerebos', file);
-        const buffer = readFileSync(image);
-        const ext = extname(file).slice(1);
-        const blob = new Blob([ buffer ], { type: `image/${ext}` });
-        return this.URLs.push(URL.createObjectURL(blob));
-      });
-
-    this.heyZere();
+    await this.URLs.forEach(url => URL.revokeObjectURL(url))
+      .then(() => this.URLs = []);
   }
 
   getRandomURL () {
     return this.URLs[Math.floor(Math.random() * this.URLs.length)];
+  }
+
+  async _convertToBlobURL () {
+    this.URLs = await convertImageToBlobURL(join(__dirname, 'assets', 'zerebos'));
+    this.heyZere();
   }
 
   heyZere () {
@@ -49,7 +40,6 @@ module.exports = class HeyZere extends Plugin {
       document.querySelectorAll('[style*="background-image"]')
         .forEach(({ style }) => {
           if (!this.URLs.filter(url => style.backgroundImage.includes(url)).length) {
-            console.log('test');
             style.backgroundImage = `url("${this.getRandomURL()}")`;
           }
         });
