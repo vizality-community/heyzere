@@ -22,8 +22,8 @@ module.exports = class HeyZere extends Plugin {
   async onStop () {
     clearInterval(this.interval);
     vizality.api.commands.unregisterCommand('heyzere');
-    await this.URLs.forEach(url => URL.revokeObjectURL(url))
-      .then(() => this.URLs = []);
+    await this.URLs.forEach(url => URL.revokeObjectURL(url));
+    this.URLs = [];
   }
 
   async _convertToBlobURL () {
