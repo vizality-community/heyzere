@@ -2,12 +2,11 @@ import { readdirSync } from 'fs';
 import { join } from 'path';
 
 import { getRandomArrayItem } from '@vizality/util/array';
-import { Plugin } from '@vizality/core';
-import api from '@vizality/api';
+import { Plugin } from '@vizality/entities';
 
 export default class HeyZere extends Plugin {
   async onStart () {
-    api.commands.registerCommand({
+    vizality.api.commands.registerCommand({
       command: 'heyzere',
       description: 'Replaces every image with a random image of Zerebos.',
       usage: '{c}',
@@ -23,7 +22,7 @@ export default class HeyZere extends Plugin {
 
   async onStop () {
     clearInterval(this.interval);
-    api.commands.unregisterCommand('heyzere');
+    vizality.api.commands.unregisterCommand('heyzere');
   }
 
   heyZere () {
