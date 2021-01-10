@@ -9,7 +9,6 @@ export default class HeyZere extends Plugin {
     vizality.api.commands.registerCommand({
       command: 'heyzere',
       description: 'Replaces every image with a random image of Zerebos.',
-      usage: '{c}',
       executor: this.heyZere.bind(this)
     });
 
