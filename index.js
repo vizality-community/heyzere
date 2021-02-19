@@ -1,7 +1,7 @@
 import { readdirSync } from 'fs';
 import { join } from 'path';
 
-import { getRandomArrayItem } from '@vizality/util/array';
+import { getRandomItem } from '@vizality/util/array';
 import { Plugin } from '@vizality/entities';
 
 export default class HeyZere extends Plugin {
@@ -29,16 +29,21 @@ export default class HeyZere extends Plugin {
       document.querySelectorAll('[style*="background-image"]')
         .forEach(({ style }) => {
           if (!this.zeres.filter(url => style.backgroundImage.includes(url)).length) {
-            style.backgroundImage = `url(${getRandomArrayItem(this.zeres)})`;
+            style.backgroundImage = `url(${getRandomItem(this.zeres)})`;
           }
         });
 
       document.querySelectorAll('img')
         .forEach(image => {
           if (!this.zeres.includes(image.src)) {
-            image.src = getRandomArrayItem(this.zeres);
+            image.src = getRandomItem(this.zeres);
           }
         });
     }, 50);
+
+    return {
+      send: false,
+      result: `Your Discord has been Zere-fied. To undo this change, you'll have to reload!`
+    };
   }
 }
